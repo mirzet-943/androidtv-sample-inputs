@@ -11,7 +11,7 @@ workflows:
           cd $PROJECT_DIR
           ./gradlew dependencies
       - name: Build AAR
-        script: |
+        script: |a
           cd $PROJECT_DIR
           ./gradlew assembleRelease # Or the specific task you want to run
     artifacts:
