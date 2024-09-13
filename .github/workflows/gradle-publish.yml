@@ -1,4 +1,4 @@
-name: Build AndroidTV Sample Inputs
+name: Build AndroidTV Sample Inputs Library
 
 on:
   push:
@@ -12,15 +12,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_DIR: library # Directory containing the library code
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up JDK 8
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin' # Use Temurin distribution, which is known for compatibility
-          java-version: '11'      # Use Java 11
+          java-version: '8'       # Use Java 8
 
       - name: Install Android SDK Command Line Tools
         run: |
@@ -29,7 +32,7 @@ jobs:
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
           mkdir -p $HOME/android-sdk/cmdline-tools
           unzip -q commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest # Move to expected location
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
       - name: Set up Android SDK
         run: |
@@ -44,11 +47,11 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build Library with Gradle
+        run: ./gradlew :library:build # Specifically targets the library module
 
       - name: Archive build outputs
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: build/outputs/**/* # Path to APK/AAR outputs
+          path: library/build/outputs/**/* # Path to AAR outputs
