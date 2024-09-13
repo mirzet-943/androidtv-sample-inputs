@@ -1,0 +1,28 @@
+workflows:
+  androidtv_sample_inputs:
+    name: Build AndroidTV Sample Inputs
+    max_build_duration: 60 # Max duration of the build in minutes
+    environment:
+      vars:
+        PROJECT_DIR: "InputSample" # Specify the directory containing the Android project
+      android:
+        tools:
+          # Specify the version of Android SDK and NDK if needed
+          version: 33.0.0
+        ndk: 21.4.7075529
+      cache:
+        cache_paths:
+          - ~/.gradle/caches
+          - ~/.gradle/wrapper
+    scripts:
+      - name: Install Dependencies
+        script: |
+          cd $PROJECT_DIR
+          ./gradlew dependencies
+      - name: Build AAR
+        script: |
+          cd $PROJECT_DIR
+          ./gradlew assembleRelease # Or the specific task you want to run
+    artifacts:
+      - build/outputs/**/*.apk
+      - build/outputs/**/*.aar
