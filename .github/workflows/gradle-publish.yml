@@ -1,0 +1,46 @@
+name: Build AndroidTV Sample Inputs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64 # Use Java 8
+      PROJECT_DIR: InputSample # The directory containing the Android project
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt' # Use AdoptOpenJDK distribution
+          java-version: '8'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 30 # Specify the Android API level
+          build-tools: 30.0.3 # Specify the build tools version
+          ndk: '21.4.7075529' # NDK version if needed
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x ./$PROJECT_DIR/gradlew
+
+      - name: Build with Gradle
+        run: ./$PROJECT_DIR/gradlew build
+
+      - name: Archive build outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: $PROJECT_DIR/build/outputs/**/* # Path to APK/AAR outputs
