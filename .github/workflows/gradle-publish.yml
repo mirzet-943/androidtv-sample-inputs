@@ -28,9 +28,8 @@ jobs:
       - name: Install a Compatible Version of Gradle
         run: |
           wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip
-          unzip gradle-6.8.3-bin.zip
-          sudo mv gradle-6.8.3 /opt/gradle
-          sudo ln -s /opt/gradle/bin/gradle /usr/bin/gradle
+          unzip gradle-6.8.3-bin.zip -d $HOME
+          echo "$HOME/gradle-6.8.3/bin" >> $GITHUB_PATH # Add the new Gradle to the PATH
 
       - name: Install Android SDK Command Line Tools
         run: |
@@ -55,7 +54,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Library with Gradle
-        run: ./gradlew :library:build --gradle-version 6.8.3 # Specify the compatible Gradle version
+        run: gradle :library:build # Use the new Gradle from the modified PATH
 
       - name: Archive build outputs
         uses: actions/upload-artifact@v3
